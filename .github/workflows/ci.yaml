@@ -21,7 +21,7 @@ jobs:
         run: |
           repo_name=$(echo "${{ github.repository }}" | sed 's/\//-/g')
           echo "repo_name=$repo_name" >> $GITHUB_OUTPUT
-          echo "Starting CI pipeline for $repo_name repository..."
+          echo "Starting CI pipeline for $repo_name repository"
 
       - name: Checkout code
         uses: actions/checkout@v4
