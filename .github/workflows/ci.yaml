@@ -120,7 +120,7 @@ jobs:
       - name: Check Docker image URI
         id: check_docker_uri
         run: |
-          echo "${{ needs.build-and-publish-image.outputs.docker_image_uri }}"
+          echo "Docker image URI: ${{ needs.build-and-publish-image.outputs.docker_image_uri }}"
 
       # - name: Vulnerabilities scan
       #   needs: [build-and-publish-image]
