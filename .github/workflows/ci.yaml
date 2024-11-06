@@ -14,14 +14,13 @@ jobs:
     name: Check application
     runs-on: ubuntu-latest
     outputs:
-      repo_name: ${{ steps.get_repo_name.outputs.repo_name }}
+      repo_name: ${{ env.REPO_NAME }}
     steps:
       - name: Start CI Pipeline
         id: get_repo_name
         run: |
           REPO_NAME=$(echo "${{ github.repository }}" | sed 's/\//-/g')
           echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
-          echo "::set-output name=repo_name::$REPO_NAME"
           echo "Starting CI pipeline to $REPO_NAME repository..."
 
       - name: Checkout code
