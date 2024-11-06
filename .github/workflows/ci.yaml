@@ -58,9 +58,15 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME  }}/${{ env.REPO_NAME }}:${{ steps.release.outputs.new_release_version }}
 
+      - name: Generate Docker Image URL
+        id: generate_docker_url
+        run: |
+          echo "image_url=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REPO_NAME }}:${{ steps.release.outputs.new_release_version }}" >> $GITHUB_ENV
+          echo "::set-output name=image_url::docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.REPO_NAME }}:${{ steps.release.outputs.new_release_version }}"
+
   scan:
     name: Vulnerabilities scan
     needs: [check-application]
     uses: comercialweber/github-workflows/.github/workflows/vulnerabilities-scan.yaml@main
     with:
-      docker_image: $secrets.DOCKERHUB_USERNAME/${{env.REPO_NAME}}:${{steps.release.outputs.new_release_version}}
+      docker_image: ${{ needs.check-application.outputs.docker_image_url }}
