@@ -1,3 +1,10 @@
+# [1.0.0-beta.4](https://github.com/comercialweber/api-integration/compare/v1.0.0-beta.3...v1.0.0-beta.4) (2024-11-06)
+
+
+### Bug Fixes
+
+* :bug: adjuste docker_image url ([8817142](https://github.com/comercialweber/api-integration/commit/88171423821d6f07fbce636cd7285914b19c1b7b))
+
 # [1.0.0-beta.3](https://github.com/comercialweber/api-integration/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2024-11-06)
 
 
