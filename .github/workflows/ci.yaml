@@ -90,7 +90,7 @@ jobs:
   build-and-publish-image:
     name: Build and publish image
     runs-on: ubuntu-latest
-    needs: [release-version]
+    needs: [check-application, release-version]
     outputs:
       docker_image_uri: ${{ steps.generate_docker_uri.outputs.docker_image_uri }}
     steps:
