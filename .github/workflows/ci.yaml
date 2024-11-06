@@ -19,8 +19,8 @@ jobs:
       - name: Start CI Pipeline
         id: get_repo_name
         run: |
-          echo "REPO_NAME=$(echo "${{ github.repository }}" | sed 's/\//-/g')" >> $GITHUB_ENV
-          echo "Starting CI pipeline to ${{env.REPO_NAME}} repository..."
+          REPO_NAME=$(echo "${{ github.repository }}" | sed 's/\//-/g')" >> $GITHUB_ENV
+          echo "Starting CI pipeline to $REPO_NAME repository..."
 
       - name: Checkout code
         uses: actions/checkout@v4
