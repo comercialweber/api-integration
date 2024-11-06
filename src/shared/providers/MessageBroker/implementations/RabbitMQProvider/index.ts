@@ -18,6 +18,7 @@ class RabbitMQProvider implements IMessageBrokerProvider {
         try {
           await callback(msg);
         } catch (error) {
+          console.error(error);
           return new Nack();
         }
       },
