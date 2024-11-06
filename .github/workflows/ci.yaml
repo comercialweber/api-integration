@@ -94,11 +94,11 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ docker_image_uri }}
+          tags: ${{ env.docker_image_uri }}
 
   vulnerabilities-scan:
     name: Vulnerabilities scan
-    needs: [check-application]
+    needs: [build-and-publish-image]
     uses: comercialweber/github-workflows/.github/workflows/vulnerabilities-scan.yaml@main
     with:
       docker_image: ${{ needs.build-and-publish-image.outputs.docker_image_uri }}
