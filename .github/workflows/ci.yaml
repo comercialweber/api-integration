@@ -113,8 +113,14 @@ jobs:
           tags: ${{ steps.generate_docker_uri.outputs.docker_image_uri }}
 
   vulnerabilities-scan:
-    name: Vulnerabilities scan
-    needs: [build-and-publish-image]
-    uses: comercialweber/github-workflows/.github/workflows/vulnerabilities-scan.yaml@main
-    with:
-      docker_image: ${{ needs.build-and-publish-image.outputs.docker_image_uri }}
+    steps:
+      - name: Check Docker image URI
+        id: generate_docker_uri
+        run: |
+          echo "${{ needs.build-and-publish-image.outputs.docker_image_uri }}"
+
+      - name: Vulnerabilities scan
+        needs: [build-and-publish-image]
+        uses: comercialweber/github-workflows/.github/workflows/vulnerabilities-scan.yaml@main
+        with:
+          docker_image: ${{ needs.build-and-publish-image.outputs.docker_image_uri }}
