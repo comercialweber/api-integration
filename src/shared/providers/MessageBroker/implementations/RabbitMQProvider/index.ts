@@ -1,4 +1,4 @@
-import { AmqpConnection, RabbitSubscribe, SubscribeResponse, Nack } from "@golevelup/nestjs-rabbitmq";
+import { AmqpConnection, SubscribeResponse, Nack } from "@golevelup/nestjs-rabbitmq";
 import { Injectable } from "@nestjs/common";
 import { IMessageBrokerProvider } from "../../IMessageBrokerProvider";
 
