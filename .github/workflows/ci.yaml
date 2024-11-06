@@ -94,7 +94,7 @@ jobs:
     outputs:
       docker_image_uri: ${{ steps.generate_docker_uri.outputs.docker_image_uri }}
     steps:
-      - name: Generate Docker Image URI
+      - name: Generate Docker image URI
         id: generate_docker_uri
         run: |
           IMAGE_URI="${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.check-application.outputs.repo_name }}:${{ needs.release-version.outputs.new_release_version }}"
@@ -110,7 +110,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ env.docker_image_uri }}
+          tags: ${{ steps.generate_docker_uri.outputs.docker_image_uri }}
 
   vulnerabilities-scan:
     name: Vulnerabilities scan
