@@ -1,0 +1,31 @@
+# Ignora node_modules e dependências locais
+node_modules
+*.log
+*.cache
+
+# Ignora arquivos de configuração de ambiente locais
+.env
+.env.*
+
+# Ignora caches e artefatos de compilação
+dist
+build
+tmp
+.cache
+coverage
+
+# Ignora arquivos específicos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Ignora arquivos e pastas de controle de versão
+.git
+.gitignore
+
+# Ignora Dockerfiles e arquivos relacionados ao Docker que não são necessários na imagem
+Dockerfile*
+docker-compose*
+
+# Ignora arquivos de documentação
+README.md
+*.md

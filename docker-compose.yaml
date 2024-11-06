@@ -1,0 +1,43 @@
+services:
+  app:
+    container_name: api-integration
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+      - "9229:9229" # debug
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - PORT=${PORT}
+      - RABBITMQ_URI=${RABBITMQ_URI}
+      - RABBITMQ_DEFAULT_EXCHANGE=${RABBITMQ_DEFAULT_EXCHANGE}
+      - RABBITMQ_DEFAULT_EXCHANGE_TYPE=${RABBITMQ_DEFAULT_EXCHANGE_TYPE}
+      - INTEGRATION_EXPORT_NOTIFICATION_FINISH_QUEUE=${INTEGRATION_EXPORT_NOTIFICATION_FINISH_QUEUE}
+      - INTEGRATION_EXPORT_NOTIFICATION_START_QUEUE=${INTEGRATION_EXPORT_NOTIFICATION_START_QUEUE}
+      - INTEGRATION_EXPORT_RUN_QUEUE=${INTEGRATION_EXPORT_RUN_QUEUE}
+    # depends_on:
+    #   - rabbitmq
+    restart:
+      unless-stopped
+    network_mode: "host"
+    volumes:
+      - .:/usr/src/app
+
+  # rabbitmq:
+  #   image: rabbitmq:3-management
+  #   container_name: rabbitmq
+  #   ports:
+  #     - "5672:5672"     # Porta padrão para conexões AMQP
+  #     - "15672:15672"   # Porta para o painel de administração
+  #   environment:
+  #     RABBITMQ_DEFAULT_USER: guest  # Altere para seu usuário
+  #     RABBITMQ_DEFAULT_PASS: guest    # Altere para sua senha
+  #   volumes:
+  #     - rabbitmq_data:/var/lib/rabbitmq  # Volume para persistência de dados
+  #   restart: 
+  #     unless-stopped
+
+volumes:
+  rabbitmq_data:
+    driver: local
