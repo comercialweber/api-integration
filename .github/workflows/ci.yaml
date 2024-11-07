@@ -66,19 +66,7 @@ jobs:
     name: Build and publish image
     runs-on: ubuntu-latest
     needs: [check-application, release-version]
-    outputs:
-      docker_image_uri: ${{ steps.generate_docker_uri.outputs.docker_image_uri }}
-      docker_image: ${{ steps.generate_docker_uri.outputs.docker_image }}
     steps:
-      - name: Generate Docker image URI
-        id: generate_docker_uri
-        run: |
-          docker_username=${{ secrets.DOCKERHUB_USERNAME }}
-          repo_name=${{ needs.check-application.outputs.repo_name }}
-          image_tag=${{ needs.release-version.outputs.new_release_version }}
-          echo "docker_image_uri=$docker_username/$repo_name:$image_tag" >> $GITHUB_OUTPUT
-          echo "docker_image=$repo_name:$image_tag" >> $GITHUB_OUTPUT
-
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -89,20 +77,11 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ steps.generate_docker_uri.outputs.docker_image_uri }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.check-application.outputs.repo_name }}:{{ needs.release-version.outputs.new_release_version }}
 
   vulnerabilities-scan:
     name: Vulnerabilities scan
-    runs-on: ubuntu-latest
-    needs: [build-and-publish-image]
-    steps:
-      - name: Check Docker image URI
-        id: check_docker_uri
-        run: |
-          echo "Docker image URI: ${{ needs.build-and-publish-image.outputs.docker_image }}"
-
-      # - name: Vulnerabilities scan
-      #   needs: [build-and-publish-image]
-      #   uses: comercialweber/github-workflows/.github/workflows/vulnerabilities-scan.yaml@main
-      #   with:
-      #     docker_image: ${{ needs.build-and-publish-image.outputs.docker_image_uri }}
+    needs: [check-application, release-version]
+    uses: comercialweber/github-workflows/.github/workflows/vulnerabilities-scan.yaml@main
+    with:
+      docker_image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.check-application.outputs.repo_name }}:{{ needs.release-version.outputs.new_release_version }}
