@@ -92,7 +92,7 @@ jobs:
       - name: Get tag version
         id: get_tag_version
         run: |
-          echo "New tag version ${{ needs.release-version.outputs.new_release_version }}"
+          echo "New tag version ${{ needs.release-version.outputs.new_release_version }} "
 
   # build-and-publish-image:
   #   name: Build and publish image
