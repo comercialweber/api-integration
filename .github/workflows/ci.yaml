@@ -62,22 +62,31 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  # build-and-publish-image:
+  #   name: Build and publish image
+  #   runs-on: ubuntu-latest
+  #   needs: [check-application, release-version]
+  #   steps:
+  #     - name: Login to Docker Hub
+  #       uses: docker/login-action@v3
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  #     - name: Build and push
+  #       uses: docker/build-push-action@v6
+  #       with:
+  #         push: true
+  #         tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.check-application.outputs.repo_name }}:${{ needs.release-version.outputs.new_release_version }}
+
   build-and-publish-image:
     name: Build and publish image
-    runs-on: ubuntu-latest
     needs: [check-application, release-version]
-    steps:
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.check-application.outputs.repo_name }}:${{ needs.release-version.outputs.new_release_version }}
+    uses: comercialweber/github-workflows/.github/workflows/build-and-publish-image.yaml@main
+    with:
+      repo_name: ${{ needs.check-application.outputs.repo_name }}
+      image_tag: ${{ needs.release-version.outputs.new_release_version }}
+    secrets: inherit
 
   vulnerabilities-scan:
     name: Vulnerabilities scan
