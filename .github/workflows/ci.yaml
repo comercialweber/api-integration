@@ -66,7 +66,8 @@ jobs:
     name: Release version
     needs: [check-application]
     uses: comercialweber/github-workflows/.github/workflows/release-version.yaml@main
-    outputs: ${{ steps.semantic-release.outputs.new_release_version }}
+    outputs:
+      tag_version: ${{ steps.semantic-release.outputs.new_release_version }}
     secrets: inherit
 
   # build-and-publish-image:
@@ -92,7 +93,7 @@ jobs:
     uses: comercialweber/github-workflows/.github/workflows/build-and-publish-image.yaml@main
     with:
       repo_name: ${{ needs.check-application.outputs.repo_name }}
-      image_tag: ${{ needs.release-version.outputs.new_release_version }}
+      image_tag: ${{ needs.release-version.outputs.tag_version }}
     secrets: inherit
 
   vulnerabilities-scan:
@@ -100,5 +101,5 @@ jobs:
     needs: [check-application, release-version, build-and-publish-image]
     uses: comercialweber/github-workflows/.github/workflows/vulnerabilities-scan.yaml@main
     with:
-      docker_image: ${{ needs.check-application.outputs.repo_name }}:${{ needs.release-version.outputs.new_release_version }}
+      docker_image: ${{ needs.check-application.outputs.repo_name }}:${{ needs.release-version.outputs.tag_version }}
     secrets: inherit
