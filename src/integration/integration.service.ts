@@ -38,7 +38,7 @@ export class IntegrationService {
       };
 
       await this.whatsappNotificationService.send({
-        message: `Atualização indo para fila de execução! Aguarde... 🕒`,
+        message: `Atualização indo para fila de execução! Por favor, aguarde... 🕒`,
         phoneNumber: '5547992384499'
       });
 
