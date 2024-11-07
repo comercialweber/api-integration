@@ -66,6 +66,7 @@ jobs:
     name: Release version
     needs: [check-application]
     uses: comercialweber/github-workflows/.github/workflows/release-version.yaml@main
+    outputs: ${{ steps.semantic-release.outputs.new_release_version }}
     secrets: inherit
 
   # build-and-publish-image:
