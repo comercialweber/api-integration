@@ -19,7 +19,7 @@ jobs:
     uses: comercialweber/github-workflows/.github/workflows/check-nodejs-application.yaml@main
     with:
       node_version: "20.17.0"
-      run_install_dependencies_command: "npm run install"
+      run_install_dependencies_command: "npm install"
       run_lint_command: "npm run lint"
       run_test_command: "npm run test"
       run_build_command: "npm run build"
