@@ -68,6 +68,7 @@ jobs:
     needs: [check-application, release-version]
     outputs:
       docker_image_uri: ${{ steps.generate_docker_uri.outputs.docker_image_uri }}
+      teste: "hello world"
     steps:
       - name: Generate Docker image URI
         id: generate_docker_uri
@@ -96,6 +97,7 @@ jobs:
         id: check_docker_uri
         run: |
           echo "Docker image URI: ${{ needs.build-and-publish-image.outputs.docker_image_uri }}"
+          echo "Imprimir teste: ${{needs.build-and-publish-image.outputs.teste}}"
 
       # - name: Vulnerabilities scan
       #   needs: [build-and-publish-image]
