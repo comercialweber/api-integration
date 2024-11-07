@@ -68,14 +68,14 @@ jobs:
     needs: [check-application, release-version]
     outputs:
       docker_image_uri: ${{ steps.generate_docker_uri.outputs.docker_image_uri }}
-      teste: ${{ steps.generate_docker_uri.outputs.teste }}
     steps:
       - name: Generate Docker image URI
         id: generate_docker_uri
         run: |
-          docker_image_uri_value="${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.check-application.outputs.repo_name }}:${{ needs.release-version.outputs.new_release_version }}"
-          echo "docker_image_uri=$docker_image_uri_value" >> $GITHUB_OUTPUT
-          echo "teste=teste" >> $GITHUB_OUTPUT
+          docker_username=${{ secrets.DOCKERHUB_USERNAME }}
+          repo_name=${{ needs.check-application.outputs.repo_name }}
+          image_tag=${{ needs.release-version.outputs.new_release_version }}
+          echo "docker_image_uri=$docker_username/$repo_name:$image_tag" >> $GITHUB_OUTPUT
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -98,7 +98,6 @@ jobs:
         id: check_docker_uri
         run: |
           echo "Docker image URI: ${{ needs.build-and-publish-image.outputs.docker_image_uri }}"
-          echo "Imprimir teste: ${{needs.build-and-publish-image.outputs.teste}}"
 
       # - name: Vulnerabilities scan
       #   needs: [build-and-publish-image]
