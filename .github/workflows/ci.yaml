@@ -77,12 +77,12 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.check-application.outputs.repo_name }}:{{ needs.release-version.outputs.new_release_version }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.check-application.outputs.repo_name }}:${{ needs.release-version.outputs.new_release_version }}
 
   vulnerabilities-scan:
     name: Vulnerabilities scan
     needs: [check-application, release-version, build-and-publish-image]
     uses: comercialweber/github-workflows/.github/workflows/vulnerabilities-scan.yaml@main
     with:
-      docker_image: ${{ needs.check-application.outputs.repo_name }}:{{ needs.release-version.outputs.new_release_version }}
+      docker_image: ${{ needs.check-application.outputs.repo_name }}:${{ needs.release-version.outputs.new_release_version }}
     secrets: inherit
