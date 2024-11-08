@@ -1,6 +1,6 @@
 interface PublishMessageDTO {
-  settings: any;
-  payload: any;
+  queue: string;
+  payload: unknown;
 };
 
 export { PublishMessageDTO };

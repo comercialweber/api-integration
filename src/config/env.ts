@@ -5,10 +5,10 @@ const envSchema = z.object({
   PORT: z.string().optional().default('3000'),
   RABBITMQ_URI: z.string().url(),
   RABBITMQ_DEFAULT_EXCHANGE: z.string().optional(),
-  RABBITMQ_DEFAULT_EXCHANGE_TYPE: z.string().optional(),
-  INTEGRATION_EXPORT_RUN_QUEUE: z.string(),
-  INTEGRATION_EXPORT_NOTIFICATION_START_QUEUE: z.string(),
-  INTEGRATION_EXPORT_NOTIFICATION_FINISH_QUEUE: z.string(),
+  INTEGRATION_EXPORT_QUEUE: z.string(),
+  NOTIFICATION_WHATSAPP_QUEUE: z.string(),
+  NOTIFICATION_EMAIL_QUEUE: z.string(),
+  WHATSAPP_PHONE_NUMBER: z.string()
 })
 
 export const env = envSchema.parse(process.env)

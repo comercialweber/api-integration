@@ -1,7 +1,9 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { timestamp } from 'rxjs';
 import { IIdProvider } from 'src/shared/providers/IdProvider/IIdProvider';
 import { IMessageBrokerProvider } from 'src/shared/providers/MessageBroker/IMessageBrokerProvider';
-import { WhatsAppNotificationService } from 'src/shared/services/WhatsAppNotification/whatsapp-notification.service';
+import { NotificationsService } from 'src/shared/services/notifications/notifications.service';
 
 let integration = {
   isRunning: false
@@ -12,78 +14,85 @@ export class IntegrationService {
 
   private readonly logger = new Logger(this.constructor.name);
 
-  constructor(@Inject('IdProvider') private readonly idProvider: IIdProvider, @Inject('IMessageBrokerProvider') private readonly messageBrokerProvider: IMessageBrokerProvider, private readonly whatsappNotificationService: WhatsAppNotificationService) { }
+  constructor(@Inject('IdProvider') private readonly idProvider: IIdProvider, @Inject('IMessageBrokerProvider') private readonly messageBrokerProvider: IMessageBrokerProvider, private readonly notificationsService: NotificationsService, private readonly configService: ConfigService) { }
 
   async onModuleInit() {
     // Consumers
-    this.messageBrokerProvider.consumeFromQueue('integration.export', this.newExportConsumer.bind(this));
+    // this.messageBrokerProvider.consumeFromQueue('integration.export', this.newExportConsumer.bind(this));
   }
 
   async handleNewExport() {
+
+    let payload = {
+      id: null,
+      timestamp: null
+    }
+
+    const phoneNumber = this.configService.get('WHATSAPP_PHONE_NUMBER')
+
     try {
 
-      await this.whatsappNotificationService.send({
-        message: `Nova exportação do sistema! 🆕`,
-        phoneNumber: '5547992384499'
-      });
-
-      const settings = {
-        exchange: 'amq.direct',
-        routingKey: 'integration.export',
-      };
-
-      const payload = {
+      Object.assign(payload, {
         id: this.idProvider.generate(),
-        timestamp: new Date().toISOString(),
-      };
-
-      await this.whatsappNotificationService.send({
-        message: `Atualização indo para fila de execução! Por favor, aguarde... 🕒`,
-        phoneNumber: '5547992384499'
+        timestamp: new Date().toISOString()
       });
 
-      await this.messageBrokerProvider.publishToQueue({ settings, payload });
+      this.logger.log(`Nova exportação de dados do sistema foi sinalizada! 📦 Ref.: id: ${payload.id} | timestamp: ${payload.timestamp}`);
 
+      await this.notificationsService.sendWhatsApp({
+        message: `Nova exportação de dados do sistema foi sinalizada! 📦 Ref.: id: ${payload.id} | timestamp: ${payload.timestamp}.`,
+        phoneNumber
+      });
 
+      const queue = this.configService.get('INTEGRATION_EXPORT_QUEUE')
 
-      this.logger.log(`Mensagem para nova exportação enviada com sucesso! Payload: ${JSON.stringify(payload)}`);
+      await this.messageBrokerProvider.publishToQueue({ queue, payload });
 
+      this.logger.log(`Integração de dados exportados na fila de execução! Ref.: id: ${payload.id} | timestamp: ${payload.timestamp}`);
 
+      await this.notificationsService.sendWhatsApp({
+        message: `Integração de dados exportados na fila de execução! Ref.: id: ${payload.id} | timestamp: ${payload.timestamp}.`,
+        phoneNumber
+      });
 
       return {
-        message: 'Nova exportação criada com sucesso!',
         ...payload
       }
     } catch (error) {
-      this.logger.error('Erro ao enviar mensagem de exportação:', error.message);
+      this.logger.error(`Houve um erro na integração de dados exportados! Ref.: id: ${payload.id} | timestamp: ${payload.timestamp}.`, error.message);
+
+      await this.notificationsService.sendWhatsApp({
+        message: `Houve um erro na integração de dados exportados! Ref.: id: ${payload.id} | timestamp: ${payload.timestamp}.`,
+        phoneNumber
+      });
 
       throw error;
     }
   }
 
-  async newExportConsumer(message) {
+  // async newExportConsumer(message) {
 
-    this.logger.log('Iniciando exportação...', message);
+  //   this.logger.log('Iniciando exportação...', JSON.stringify(message));
 
-    integration.isRunning = true;
+  //   integration.isRunning = true;
 
-    await this.whatsappNotificationService.send({
-      message: `Atualização foi iniciada! 🔄`,
-      phoneNumber: '5547992384499'
-    });
+  //   await this.notificationsService.sendWhatsApp({
+  //     message: `Atualização foi iniciada! 🔄`,
+  //     phoneNumber: '5547992384499'
+  //   });
 
-    this.logger.log('Exportação iniciada com sucesso!');
+  //   this.logger.log('Exportação iniciada com sucesso!');
 
-    setTimeout(async () => {
+  //   setTimeout(async () => {
 
-      integration.isRunning = false;
+  //     integration.isRunning = false;
 
-      await this.whatsappNotificationService.send({
-        message: `Atualização foi concluída com sucesso! ✅`,
-        phoneNumber: '5547992384499'
-      });
+  //     await this.notificationsService.sendWhatsApp({
+  //       message: `Atualização foi concluída com sucesso! ✅`,
+  //       phoneNumber: '5547992384499'
+  //     });
 
-      this.logger.log('Exportação finalizada com sucesso!');
-    }, 10000);
-  }
+  //     this.logger.log('Exportação finalizada com sucesso!');
+  //   }, 10000);
+  // }
 }

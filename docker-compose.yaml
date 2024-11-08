@@ -4,18 +4,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+    # image: brunohsweber/comercialweber-api-integration:1.0.0-beta.35
     ports:
-      - "${PORT:-3000}:${PORT:-3000}"
+      - "${PORT}:${PORT}"
       - "9229:9229" # debug
-    environment:
-      - NODE_ENV=${NODE_ENV}
-      - PORT=${PORT}
-      - RABBITMQ_URI=${RABBITMQ_URI}
-      - RABBITMQ_DEFAULT_EXCHANGE=${RABBITMQ_DEFAULT_EXCHANGE}
-      - RABBITMQ_DEFAULT_EXCHANGE_TYPE=${RABBITMQ_DEFAULT_EXCHANGE_TYPE}
-      - INTEGRATION_EXPORT_NOTIFICATION_FINISH_QUEUE=${INTEGRATION_EXPORT_NOTIFICATION_FINISH_QUEUE}
-      - INTEGRATION_EXPORT_NOTIFICATION_START_QUEUE=${INTEGRATION_EXPORT_NOTIFICATION_START_QUEUE}
-      - INTEGRATION_EXPORT_RUN_QUEUE=${INTEGRATION_EXPORT_RUN_QUEUE}
+    env_file:
+      - .env
     # depends_on:
     #   - rabbitmq
     restart:
