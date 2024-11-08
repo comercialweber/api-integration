@@ -1,13 +1,12 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { timestamp } from 'rxjs';
 import { IIdProvider } from 'src/shared/providers/IdProvider/IIdProvider';
 import { IMessageBrokerProvider } from 'src/shared/providers/MessageBroker/IMessageBrokerProvider';
 import { NotificationsService } from 'src/shared/services/notifications/notifications.service';
 
-let integration = {
-  isRunning: false
-};
+// let integration = {
+//   isRunning: false
+// };
 
 @Injectable()
 export class IntegrationService {

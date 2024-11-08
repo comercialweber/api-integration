@@ -2,7 +2,6 @@ import { Inject, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { EmailNotificationDTO } from "src/shared/dtos/EmailNotificationDTO";
 import { WhatsAppNotificationDTO } from "src/shared/dtos/WhatsAppNotificationDTO";
-import { NotificationRoutingKeyEnum } from "src/shared/enums/notification.enum";
 import { IMessageBrokerProvider } from "src/shared/providers/MessageBroker/IMessageBrokerProvider";
 
 class NotificationsService {
