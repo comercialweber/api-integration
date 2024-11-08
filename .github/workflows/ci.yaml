@@ -1,0 +1,54 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - release/*
+      - hotfix/*
+      - alpha
+
+jobs:
+  get-formatted-repo-name:
+    name: Get formatted repo name
+    uses: comercialweber/github-workflows/.github/workflows/get-formatted-repo-name.yaml@main
+
+  check-application:
+    name: Check application
+    uses: comercialweber/github-workflows/.github/workflows/check-nodejs-application.yaml@main
+    with:
+      node_version: "20.17.0"
+      run_install_dependencies_command: "npm install"
+      run_lint_command: "npm run lint"
+      run_test_command: "npm run test"
+      run_build_command: "npm run build"
+
+  bump-version:
+    name: Bump version
+    needs: [get-formatted-repo-name, check-application]
+    uses: comercialweber/github-workflows/.github/workflows/bump-version.yaml@main
+    secrets: inherit
+
+  build-and-publish-docker-image:
+    name: Build and publish Docker image
+    needs: [get-formatted-repo-name, check-application, bump-version]
+    uses: comercialweber/github-workflows/.github/workflows/build-and-publish-docker-image.yaml@main
+    with:
+      repo_name: ${{ needs.get-formatted-repo-name.outputs.repo_name }}
+      image_tag: ${{ needs.bump-version.outputs.new_release_version }}
+    secrets: inherit
+
+  vulnerabilities-scan:
+    name: Vulnerabilities scan
+    needs:
+      [
+        get-formatted-repo-name,
+        check-application,
+        bump-version,
+        build-and-publish-docker-image,
+      ]
+    uses: comercialweber/github-workflows/.github/workflows/vulnerabilities-scan.yaml@main
+    with:
+      docker_image: ${{ needs.get-formatted-repo-name.outputs.repo_name }}:${{ needs.bump-version.outputs.new_release_version }}
+    secrets: inherit
