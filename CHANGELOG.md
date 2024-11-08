@@ -1,3 +1,10 @@
+# [1.0.0-beta.37](https://github.com/comercialweber/api-integration/compare/v1.0.0-beta.36...v1.0.0-beta.37) (2024-11-08)
+
+
+### Bug Fixes
+
+* :bug: ([c70165a](https://github.com/comercialweber/api-integration/commit/c70165a541983e465cb1c8ca1a8ded3b0a1483c3))
+
 # 1.0.0-rc.1 (2024-11-08)
 
 
