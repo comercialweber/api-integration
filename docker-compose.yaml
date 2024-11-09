@@ -10,28 +10,34 @@ services:
       - "9229:9229" # debug
     env_file:
       - .env
-    # depends_on:
-    #   - rabbitmq
+    depends_on:
+      - rabbitmq
     restart:
       unless-stopped
-    network_mode: "host"
+    # networks:
+    #   - comercialweber-network
+    network_mode: host
     volumes:
       - .:/usr/src/app
 
-  # rabbitmq:
-  #   image: rabbitmq:3-management
-  #   container_name: rabbitmq
-  #   ports:
-  #     - "5672:5672"     # Porta padrão para conexões AMQP
-  #     - "15672:15672"   # Porta para o painel de administração
-  #   environment:
-  #     RABBITMQ_DEFAULT_USER: guest  # Altere para seu usuário
-  #     RABBITMQ_DEFAULT_PASS: guest    # Altere para sua senha
-  #   volumes:
-  #     - rabbitmq_data:/var/lib/rabbitmq  # Volume para persistência de dados
-  #   restart: 
-  #     unless-stopped
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"     # Porta padrão para conexões AMQP
+      - "15672:15672"   # Porta para o painel de administração
+    environment:
+      RABBITMQ_DEFAULT_USER: guest  # Altere para seu usuário
+      RABBITMQ_DEFAULT_PASS: guest    # Altere para sua senha
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq  # Volume para persistência de dados
+    network_mode: host
+    restart: 
+      unless-stopped
 
 volumes:
   rabbitmq_data:
     driver: local
+# networks:
+#   comercialweber-network:
+#     driver: host
