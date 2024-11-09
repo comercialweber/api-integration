@@ -12,6 +12,10 @@ import { env } from 'src/config/env';
       imports: [ConfigModule],
       useFactory: () => ({
         uri: env.RABBITMQ_URI,
+        connectionInitOptions: { wait: true, timeout: 60000 },
+        connectionManagerOptions: {
+          reconnectTimeInSeconds: 5,
+        }
       }),
       inject: []
     }),
